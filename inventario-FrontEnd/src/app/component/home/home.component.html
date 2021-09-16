@@ -1,0 +1,208 @@
+<dx-tab-panel *ngIf="logUser.rol=='Administrador'">
+    <dxi-item title="Empleados" icon="group">
+        <dx-data-grid [dataSource]="employees" keyExpr="id" (onEditingStart)="edicion($event)"
+            (onSaved)="guardado($event)" (onRowRemoved)="eliminado($event)">
+            <dxi-column dataField="nombres"></dxi-column>
+            <dxi-column dataField="apellidos"></dxi-column>
+            <dxi-column dataField="email"></dxi-column>
+            <dxi-column dataField="direccion"></dxi-column>
+            <dxi-column dataField="fechaNacimiento"></dxi-column>
+            <dxi-column dataField="celular"></dxi-column>
+            <dxi-column dataField="vacuna"></dxi-column>
+            <dxi-column dataField="tipoVacuna"></dxi-column>
+            <dxi-column dataField="numeroDosis"></dxi-column>
+            <dxi-column dataField="primeraDosis"></dxi-column>
+            <dxi-column dataField="segundaDosis"></dxi-column>
+            <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="true">
+                <dxo-popup title="Información del Empleado" [showTitle]="true" [width]="720" [height]="525">
+                </dxo-popup>
+                <dxo-form>
+                    <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
+                        <dxi-item dataField="nombres">
+                            <dxi-validation-rule type="required" message="Nombres requeridos">
+                            </dxi-validation-rule>
+                            <dxi-validation-rule type="pattern" [pattern]="namePattern" message="No ingrese números">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="apellidos">
+                            <dxi-validation-rule type="required" message="Apellidos requeridos">
+                            </dxi-validation-rule>
+                            <dxi-validation-rule type="pattern" [pattern]="namePattern" message="No ingrese números">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="email">
+                            <dxi-validation-rule type="required" message="Email requirido">
+                            </dxi-validation-rule>
+                            <dxi-validation-rule type="email" message="Email invalido">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="FechaNacimiento" editorType="dxDateBox">
+                            <dxi-validation-rule type="required" message="Fecha requirida">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="direccion">
+                            <dxi-validation-rule type="required" message="Dirección requirida">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="celular">
+                            <dxi-validation-rule type="required" message="Celular requirido">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                    </dxi-item>
+                    <dxi-item itemType="group" caption="vacuna" [colCount]="2" [colSpan]="2">
+                        <dxi-item dataField="vacuna" editorType="dxSelectBox"
+                            [editorOptions]="{ dataSource: tipoVacuna }"></dxi-item>
+                        <dxi-item dataField="tipoVacuna" editorType="dxSelectBox"
+                            [editorOptions]="{ dataSource: tipoVacuna }"></dxi-item>
+                        <dxi-item dataField="numeroDosis"></dxi-item>
+                        <dxi-item dataField="primeraDosis" editorType="dxDateBox">
+                        </dxi-item>
+                        <dxi-item dataField="segundaDosis" editorType="dxDateBox">
+                        </dxi-item>
+                    </dxi-item>
+                </dxo-form>
+            </dxo-editing>
+        </dx-data-grid>
+    </dxi-item>
+
+
+    <dxi-item title="Nuevo" icon="user" badge="new">
+        <form (submit)="onFormSubmit()">
+            <dx-form id="form" [colCount]="2" [formData]="usuarioNuevo" [showValidationSummary]="true">
+                <dxi-item itemType="group" caption="Información Personal">
+                    <dxi-item dataField="TipoUsuario" editorType="dxSelectBox"
+                        [editorOptions]="{ dataSource: usuarioTipo }"></dxi-item>
+                    <dxi-item dataField="Nombres">
+                        <dxi-validation-rule type="required" message="Nombres requeridos">
+                        </dxi-validation-rule>
+                        <dxi-validation-rule type="pattern" [pattern]="namePattern" message="No ingrese números">
+                        </dxi-validation-rule>
+                    </dxi-item>
+                    <dxi-item dataField="Apellidos">
+                        <dxi-validation-rule type="required" message="Apellidos requeridos">
+                        </dxi-validation-rule>
+                        <dxi-validation-rule type="pattern" [pattern]="namePattern" message="No ingrese números">
+                        </dxi-validation-rule>
+                    </dxi-item>
+                    <dxi-item dataField="Email">
+                        <dxi-validation-rule type="required" message="Email requirido">
+                        </dxi-validation-rule>
+                        <dxi-validation-rule type="email" message="Email invalido">
+                        </dxi-validation-rule>
+                    </dxi-item>
+                    <dxi-item dataField="FechaNacimiento" editorType="dxDateBox">
+                        <dxi-validation-rule type="required" message="Fecha requirida">
+                        </dxi-validation-rule>
+                    </dxi-item>
+                    <dxi-item dataField="Direccion">
+                        <dxi-validation-rule type="required" message="Dirección requirida">
+                        </dxi-validation-rule>
+                    </dxi-item>
+                    <dxi-item dataField="Celular">
+                        <dxi-validation-rule type="required" message="Celular requirido">
+                        </dxi-validation-rule>
+                        <dxi-validation-rule type="" message="Número invalido">
+                        </dxi-validation-rule>
+                    </dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group" caption="Vacunación">
+                    <dxi-item dataField="Vacunado" editorType="dxSelectBox"
+                        [editorOptions]="{ dataSource: confirmacion }">
+                        <dxi-validation-rule type="required" message="Información requirida">
+                        </dxi-validation-rule>
+                    </dxi-item>
+                    <dxi-item *ngIf="usuarioNuevo.Vacunado=='Si'" dataField="Tipovacuna" editorType="dxSelectBox"
+                        [editorOptions]="{ dataSource: tipoVacuna }"></dxi-item>
+                    <dxi-item *ngIf="usuarioNuevo.Vacunado=='Si'" dataField="numeroDosis" editorType="dxSelectBox"
+                        [editorOptions]="{ dataSource: numDosis }"></dxi-item>
+                    <dxi-item *ngIf="usuarioNuevo.Vacunado=='Si' && usuarioNuevo.numeroDosis > 0 "
+                        dataField="PrimeraDosis" editorType="dxDateBox">
+                    </dxi-item>
+                    <dxi-item *ngIf="usuarioNuevo.Vacunado=='Si' && usuarioNuevo.numeroDosis > 1"
+                        dataField="SegundaDosis" editorType="dxDateBox">
+                    </dxi-item>
+                </dxi-item>
+                <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions">
+                </dxi-item>
+            </dx-form>
+        </form>
+        
+    </dxi-item>
+    <dxi-item title="Salir" icon="clear">
+        <dx-button stylingMode="log out" text="Contained" type="danger" [width]="120" (onClick)="click()">
+        </dx-button>
+
+    </dxi-item>
+</dx-tab-panel>
+
+<dx-tab-panel *ngIf="logUser.rol=='Empleado'">
+    <dxi-item title="usuario" icon="user">
+        <dx-data-grid [dataSource]="emplea" keyExpr="id" (onEditingStart)="edicion($event)" (onSaved)="guardado($event)"
+            (onRowRemoved)="eliminado($event)">
+            <dxi-column dataField="nombres"></dxi-column>
+            <dxi-column dataField="apellidos"></dxi-column>
+            <dxi-column dataField="email"></dxi-column>
+            <dxi-column dataField="celular"></dxi-column>
+            <dxi-column dataField="direccion"></dxi-column>
+            <dxi-column dataField="fechaNacimiento"></dxi-column>
+            <dxi-column dataField="vacuna"></dxi-column>
+            <dxi-column dataField="tipoVacuna"></dxi-column>
+            <dxi-column dataField="numeroDosis"></dxi-column>
+            <dxi-column dataField="primeraDosis"></dxi-column>
+            <dxi-column dataField="segundaDosis"></dxi-column>
+            <dxo-editing mode="popup" [allowUpdating]="true" [allowAdding]="true">
+                <dxo-popup title="Información del Empleado" [showTitle]="true" [width]="720" [height]="525">
+                </dxo-popup>
+                <dxo-form>
+                    <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
+                        <dxi-item dataField="nombres">
+                            <dxi-validation-rule type="required" message="Nombres requeridos">
+                            </dxi-validation-rule>
+                            <dxi-validation-rule type="pattern" [pattern]="namePattern" message="No ingrese números">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="apellidos">
+                            <dxi-validation-rule type="required" message="Apellidos requeridos">
+                            </dxi-validation-rule>
+                            <dxi-validation-rule type="pattern" [pattern]="namePattern" message="No ingrese números">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="email">
+                            <dxi-validation-rule type="required" message="Email requirido">
+                            </dxi-validation-rule>
+                            <dxi-validation-rule type="email" message="Email invalido">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="FechaNacimiento" editorType="dxDateBox">
+                            <dxi-validation-rule type="required" message="Fecha requirida">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="direccion">
+                            <dxi-validation-rule type="required" message="Dirección requirida">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                        <dxi-item dataField="celular">
+                            <dxi-validation-rule type="required" message="Celular requirido">
+                            </dxi-validation-rule>
+                        </dxi-item>
+                    </dxi-item>
+                    <dxi-item itemType="group" caption="vacuna" [colCount]="2" [colSpan]="2">
+                        <dxi-item dataField="tipoVacuna" editorType="dxSelectBox"
+                            [editorOptions]="{ dataSource: tipoVacuna }"></dxi-item>
+                        <dxi-item dataField="numeroDosis"></dxi-item>
+                        <dxi-item dataField="primeraDosis" editorType="dxDateBox">
+                        </dxi-item>
+                        <dxi-item dataField="segundaDosis" editorType="dxDateBox">
+                        </dxi-item>
+                    </dxi-item>
+                </dxo-form>
+            </dxo-editing>
+        </dx-data-grid>
+    </dxi-item>
+    <dxi-item title="Salir" icon="clear">
+        <dx-button stylingMode="Log out" text="Contained" type="danger" [width]="120" (onClick)="click()">
+        </dx-button>
+
+    </dxi-item>
+</dx-tab-panel>
